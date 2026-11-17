@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Para Daniela Flores ✨ | Una Estrella en el Cielo</title>
+
+  <!-- Open Graph / Vista previa para WhatsApp y Redes -->
+  <meta name="description" content="Un pequeño viaje hacia las estrellas en memoria de tu Abu, con todo mi amor." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Para Daniela Flores ✨ | Una Estrella en el Cielo" />
+  <meta property="og:description" content="Un pequeño viaje hacia las estrellas en memoria de tu Abu, con todo mi amor." />
+  <meta name="theme-color" content="#050711" />
+
+  <!-- Tipografías cinematográficas -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-deep: #050711;
+      --gold-soft: #ffe599;
+      --gold-warm: #ffb347;
+      --gold-glow: rgba(255, 214, 128, 0.35);
+      --text-main: #f7f4eb;
+      --text-muted: rgba(235, 232, 225, 0.78);
+      --glass-bg: rgba(11, 15, 32, 0.58);
+      --glass-border: rgba(255, 224, 153, 0.22);
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Lienzo estelar de fondo */
+    #sky-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: block;
+      touch-action: none;
+    }
+
+    /* Halo de viñeta sutil cinematográfica */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 45%, transparent 38%, rgba(2, 3, 10, 0.58) 100%);
+    }
+
+    /* Barra superior: progreso y audio */
+    .top-bar {
+      position: fixed;
+      top: max(14px, env(safe-area-inset-top));
+      left: 0;
+      right: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      pointer-events: none;
+    }
+
+    .progress-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(8, 11, 24, 0.45);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      pointer-events: auto;
+      transition: opacity 0.5s ease;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.24);
+      transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .dot.active {
+      width: 18px;
+      border-radius: 999px;
+      background: var(--gold-soft);
+      box-shadow: 0 0 10px rgba(255, 229, 153, 0.8);
+    }
+
+    .dot.done {
+      background: rgba(255, 214, 128, 0.55);
+    }
+
+    .audio-btn {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 224, 153, 0.28);
+      background: rgba(10, 14, 30, 0.58);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--gold-soft);
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    .audio-btn:hover {
+      background: rgba(255, 224, 153, 0.14);
+      border-color: rgba(255, 229, 153, 0.55);
+    }
+
+    .audio-btn.muted {
+      color: var(--text-muted);
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    /* Escenario principal */
+    .stage {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 68px 18px max(26px, env(safe-area-inset-bottom));
+      pointer-events: none;
+    }
+
+    .stage.star-clear {
+      align-items: flex-end;
+      padding-top: 28vh;
+      padding-bottom: max(26px, env(safe-area-inset-bottom));
+    }
+
+    .scene {
+      position: absolute;
+      width: min(92vw, 620px);
+      max-height: calc(100vh - 110px);
+      overflow-y: auto;
+      scrollbar-width: none;
+      opacity: 0;
+      transform: translateY(22px) scale(0.985);
+      pointer-events: none;
+      transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1), transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+      text-align: center;
+      padding: 8px 4px;
+    }
+
+    .scene::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scene.active {
+      position: relative;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .scene.star-scene {
+      max-height: 66vh;
+    }
+
+    /* Tarjetas etéreas */
+    .ethereal-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--glass-border);
+      border-radius: 26px;
+      padding: 32px 26px;
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.52),
+        inset 0 0 38px rgba(255, 224, 153, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ethereal-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 229, 153, 0.6), transparent);
+    }
+
+    .soft-panel {
+      background: linear-gradient(180deg, rgba(8, 12, 28, 0.44) 0%, rgba(8, 12, 28, 0.64) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 229, 153, 0.14);
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+    }
+
+    /* Tipografía */
+    .eyebrow {
+      display: inline-block;
+      font-family: var(--font-sans);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-soft);
+      margin-bottom: 14px;
+      opacity: 0.92;
+    }
+
+    h1.hero-title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: clamp(2.35rem, 6.5vw, 3.6rem);
+      line-height: 1.08;
+      letter-spacing: 0.01em;
+      color: #fffaf0;
+      text-shadow: 0 0 32px rgba(255, 224, 153, 0.36);
+      margin-bottom: 14px;
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-serif);
+      font-size: clamp(1.18rem, 3.5vw, 1.48rem);
+      font-style: italic;
+      line-height: 1.5;
+      color: rgba(247, 244, 235, 0.88);
+      max-width: 440px;
+      margin: 0 auto 18px;
+    }
+
+    .hint-note {
+      font-size: 0.82rem;
+      color: rgba(255, 229, 153, 0.78);
+      background: rgba(255, 229, 153, 0.07);
+      border: 1px solid rgba(255, 229, 153, 0.16);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      margin-bottom: 26px;
+    }
+
+    .poem-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+
+    .poem-line {
+      font-family: var(--font-serif);
+      font-size: clamp(1.22rem, 3.6vw, 1.5rem);
+      line-height: 1.58;
+      color: rgba(250, 247, 240, 0.94);
+      font-weight: 400;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .scene.active .poem-line {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .scene.active .poem-line:nth-child(1) { transition-delay: 0.18s; }
+    .scene.active .poem-line:nth-child(2) { transition-delay: 0.75s; }
+    .scene.active .poem-line:nth-child(3) { transition-delay: 1.35s; }
+    .scene.active .poem-line:nth-child(4) { transition-delay: 1.95s; }
+
+    .poem-line em, .whisper-quote em {
+      color: var(--gold-soft);
+      font-style: italic;
+    }
+
+    .poem-line strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Carta de Abu (Escena 3) */
+    .whisper-header {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-soft);
+      margin-bottom: 16px;
+      opacity: 0.9;
+    }
+
+    .whisper-quote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1.2rem, 3.5vw, 1.46rem);
+      line-height: 1.62;
+      color: #fff8ea;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 26px;
+      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Escena 4: Ritual interactivo */
+    .ritual-counter {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 14px 0 22px;
+    }
+
+    .star-pip {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 229, 153, 0.3);
+      background: rgba(255, 229, 153, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      color: rgba(255, 229, 153, 0.3);
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .star-pip.lit {
+      background: rgba(255, 229, 153, 0.22);
+      border-color: var(--gold-soft);
+      color: var(--gold-soft);
+      transform: scale(1.12);
+      box-shadow: 0 0 18px rgba(255, 214, 128, 0.55);
+    }
+
+    /* Escena 5: Carta final */
+    .letter-card {
+      text-align: left;
+      padding: 28px 24px;
+    }
+
+    .letter-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .letter-salutation {
+      font-family: var(--font-serif);
+      font-size: clamp(1.38rem, 4vw, 1.65rem);
+      font-weight: 600;
+      color: var(--gold-soft);
+      margin-bottom: 14px;
+    }
+
+    .mode-switch {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 229, 153, 0.18);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .mode-pill {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .mode-pill.active {
+      background: rgba(255, 229, 153, 0.2);
+      color: var(--gold-soft);
+    }
+
+    .letter-body {
+      font-family: var(--font-serif);
+      font-size: clamp(1.14rem, 3.3vw, 1.34rem);
+      line-height: 1.62;
+      color: rgba(250, 247, 240, 0.94);
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      margin-bottom: 22px;
+    }
+
+    .letter-body .promise-highlight {
+      font-size: clamp(1.24rem, 3.6vw, 1.46rem);
+      font-weight: 600;
+      color: #fff6dc;
+      padding: 10px 14px;
+      border-left: 2px solid var(--gold-soft);
+      background: linear-gradient(90deg, rgba(255, 229, 153, 0.1), transparent);
+      border-radius: 0 12px 12px 0;
+    }
+
+    .letter-sign {
+      font-family: var(--font-serif);
+      font-size: clamp(1.25rem, 3.6vw, 1.48rem);
+      font-weight: 600;
+      font-style: italic;
+      color: var(--gold-soft);
+      margin-top: 4px;
+    }
+
+    /* Botones */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 229, 153, 0.65);
+      background: linear-gradient(135deg, rgba(255, 224, 153, 0.24), rgba(255, 179, 71, 0.16));
+      color: #fff9ec;
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow:
+        0 0 24px rgba(255, 214, 128, 0.25),
+        inset 0 0 12px rgba(255, 229, 153, 0.15);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      background: linear-gradient(135deg, rgba(255, 224, 153, 0.36), rgba(255, 179, 71, 0.24));
+      box-shadow: 0 0 34px rgba(255, 214, 128, 0.45);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(247, 244, 235, 0.88);
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.28s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.13);
+      border-color: rgba(255, 229, 153, 0.4);
+      color: #fff;
+    }
+
+    .actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Botón flotante para reabrir la carta */
+    .reopen-letter-btn {
+      position: fixed;
+      bottom: max(28px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      z-index: 25;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: max-content;
+      max-width: 92vw;
+    }
+
+    .reopen-letter-btn.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Mensaje flotante junto a la estrella */
+    #star-whisper {
+      position: fixed;
+      left: 50%;
+      top: 26%;
+      transform: translate(-50%, -10px);
+      z-index: 15;
+      pointer-events: none;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1.15rem, 3.5vw, 1.45rem);
+      color: #fff5d6;
+      text-shadow: 0 0 18px rgba(255, 214, 128, 0.85), 0 2px 10px rgba(0, 0, 0, 0.8);
+      opacity: 0;
+      transition: opacity 0.6s ease, transform 0.8s ease;
+      text-align: center;
+      width: 85vw;
+    }
+
+    #star-whisper.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    /* Pie sutil para recordar que el cielo es interactivo */
+    .sky-touch-hint {
+      position: fixed;
+      bottom: max(10px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 12;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      color: rgba(255, 229, 153, 0.45);
+      pointer-events: none;
+      white-space: nowrap;
+      transition: opacity 0.5s ease;
+    }
+
+    @media (max-width: 480px) {
+      .ethereal-card, .soft-panel, .letter-card {
+        padding: 24px 19px;
+        border-radius: 22px;
+      }
+      .stage.star-clear {
+        padding-top: 26vh;
+      }
+      .scene.star-scene {
+        max-height: 68vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="sky-canvas"></canvas>
+  <div class="vignette"></div>
+
+  <!-- Barra superior -->
+  <header class="top-bar">
+    <div class="progress-dots" id="progress-dots" aria-label="Progreso de la historia">
+      <span class="dot active" data-step="0"></span>
+      <span class="dot" data-step="1"></span>
+      <span class="dot" data-step="2"></span>
+      <span class="dot" data-step="3"></span>
+      <span class="dot" data-step="4"></span>
+      <span class="dot" data-step="5"></span>
+    </div>
+
+    <button class="audio-btn" id="audio-toggle" type="button" aria-label="Activar o silenciar música">
+      <span id="audio-icon">🔇</span>
+      <span id="audio-label">Música</span>
+    </button>
+  </header>
+
+  <!-- Mensaje flotante junto a la estrella de Abu -->
+  <div id="star-whisper" aria-live="polite"></div>
+
+  <!-- Contenedor de escenas -->
+  <main class="stage" id="stage">
+
+    <!-- ESCENA 0: PORTADA DE BIENVENIDA -->
+    <section class="scene active" id="scene-0">
+      <div class="soft-panel">
+        <span class="eyebrow">✨ En memoria de tu Abu ✨</span>
+        <h1 class="hero-title">Para Daniela Flores</h1>
+        <p class="hero-subtitle">
+          Una pequeña historia escrita en el cielo para abrazar tu corazón hoy.
+        </p>
+        <div class="hint-note">
+          🎧 Te recomiendo activar el sonido y tocar la pantalla durante el viaje
+        </div>
+        <div>
+          <button class="btn-primary" id="btn-start" type="button">
+            Comenzar el viaje ✨
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESCENA 1: EL SILENCIO DE HOY -->
+    <section class="scene" id="scene-1">
+      <div class="soft-panel">
+        <span class="eyebrow">Capítulo I · Esta noche</span>
+        <div class="poem-stack">
+          <p class="poem-line">Hay días en los que el mundo parece quedarse en silencio…</p>
+          <p class="poem-line">Días en los que una despedida deja un vacío tan hondo que ninguna palabra parece suficiente.</p>
+          <p class="poem-line">Pero las almas que nos amaron con tanta ternura nunca se apagan de verdad… <em>solo cambian de lugar para brillar desde más alto.</em></p>
+        </div>
+        <button class="btn-primary next-scene-btn" data-next="2" type="button">
+          Acompañar esta pequeña luz ✨
+        </button>
+      </div>
+    </section>
+
+    <!-- ESCENA 2: EL VIAJE DE TU ABU -->
+    <section class="scene" id="scene-2">
+      <div class="soft-panel">
+        <span class="eyebrow">Capítulo II · Su viaje de luz</span>
+        <div class="poem-stack">
+          <p class="poem-line">Hoy, tu <strong>Abu</strong> emprendió el viaje más sereno y hermoso de todos.</p>
+          <p class="poem-line">Dejó atrás el cansancio del tiempo para llegar a un lugar lleno de paz, donde ya nada duele y todo es luz cálida y descanso eterno.</p>
+          <p class="poem-line">Y antes de tomar su lugar entre las estrellas más brillantes de la noche, miró hacia abajo con una sonrisa… <em>buscándote a ti, Dani.</em></p>
+        </div>
+        <button class="btn-primary next-scene-btn" data-next="3" type="button">
+          Escuchar su mensaje para ti 🌟
+        </button>
+      </div>
+    </section>
+
+    <!-- ESCENA 3: EL MENSAJE DE TU ABU DESDE EL CIELO -->
+    <section class="scene star-scene" id="scene-3">
+      <div class="ethereal-card">
+        <div class="whisper-header">✨ Un susurro desde el cielo ✨</div>
+        <div class="whisper-quote">
+          <p>«Mi niña linda, mi Daniela… no llores pensando que me he ido lejos de tu vida.»</p>
+          <p>«Hoy estoy en un lugar hermoso y tranquilo, descansando en paz. Quiero que sepas que <em>te quiero muchísimo</em>, con un amor tan grande que ni siquiera la distancia entre el cielo y la tierra puede borrar.»</p>
+          <p>«Cada vez que sientas una brisa suave acariciar tu rostro, o mires al cielo en una noche callada, recuerda que sigo cuidándote y que vivo en cada latido de tu corazón. Sé fuerte, mi niña… yo siempre estaré orgullosa de ti.»</p>
+        </div>
+        <button class="btn-primary next-scene-btn" data-next="4" type="button">
+          Abrazar su recuerdo 🤍
+        </button>
+      </div>
+    </section>
+
+    <!-- ESCENA 4: RITUAL INTERACTIVO -->
+    <section class="scene star-scene" id="scene-4">
+      <div class="ethereal-card">
+        <span class="eyebrow">Capítulo IV · Un destello hasta el cielo</span>
+        <div class="poem-stack" style="margin-bottom: 10px;">
+          <p class="poem-line" style="transition-delay: 0.1s;">Ahora tu Abu es la estrella más brillante de este cielo.</p>
+          <p class="poem-line" style="font-size: 1.12rem; color: var(--text-muted); transition-delay: 0.35s;">
+            Toca el botón de abajo (o cualquier parte del cielo) 3 veces para enviarle tu amor hasta las estrellas.
+          </p>
+        </div>
+
+        <div class="ritual-counter" aria-label="Destellos enviados">
+          <div class="star-pip" id="pip-1">✦</div>
+          <div class="star-pip" id="pip-2">✦</div>
+          <div class="star-pip" id="pip-3">✦</div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn-primary" id="btn-send-spark" type="button">
+            Enviar un destello de amor a Abu ✨ (<span id="spark-count">0</span>/3)
+          </button>
+          <button class="btn-primary hidden" id="btn-to-letter" type="button">
+            Alguien más quiere decirte algo… 💌
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESCENA 5: CARTA FINAL PARA DANIELA -->
+    <section class="scene star-scene" id="scene-5">
+      <div class="ethereal-card letter-card">
+        <div class="letter-top-row">
+          <span class="eyebrow" style="margin-bottom: 0;">💌 Para ti, bajo su estrella</span>
+          <div class="mode-switch" role="tablist" aria-label="Estilo del mensaje">
+            <button class="mode-pill active" id="pill-movie" type="button">✨ Escena de película</button>
+            <button class="mode-pill" id="pill-raw" type="button">🤍 Del corazón</button>
+          </div>
+        </div>
+
+        <h2 class="letter-salutation">Para ti, mi amor, Daniela:</h2>
+
+        <!-- Versión Escena de Película -->
+        <div class="letter-body" id="letter-movie">
+          <p>
+            Tal vez no haya logrado conectar de cerca con cómo fue toda tu historia junto a tu Abu… pero sí conozco tu corazón, y hoy aprovecho este pequeño espacio bajo su estrella para hacerte una promesa:
+          </p>
+          <p class="promise-highlight">
+            Yo no te voy a dejar sola, amor.
+          </p>
+          <p>
+            Aun cuando tus fuerzas decaigan, cuando tus energías ya no den más y tu persona no quiera saber nada del mundo… yo voy a estar ahí contigo, sosteniéndote en silencio, abrazando tu dolor y caminando a tu lado hasta cuando la vida decida.
+          </p>
+          <p>
+            Mientras tu Abu te cuida desde el cielo, yo estaré aquí cuidándote en la tierra.
+          </p>
+          <p class="letter-sign">Te amo y te extraño mucho. ❤️</p>
+        </div>
+
+        <!-- Versión Palabras Originales -->
+        <div class="letter-body hidden" id="letter-raw">
+          <p>
+            Tal vez no haya logrado conectar en cómo fue la relación con su abu, pero aprovecho este espacio para decirte que <strong>yo no te voy a dejar sola, amor</strong>.
+          </p>
+          <p>
+            Aun cuando tus fuerzas decaigan, tus energías no den más y tu persona no quiera saber nada, yo estaré contigo hasta cuando la vida decida.
+          </p>
+          <p class="letter-sign">Te amo y te extraño mucho. ❤️</p>
+        </div>
+
+        <div class="actions-row" style="justify-content: flex-start;">
+          <button class="btn-primary" id="btn-meteor-shower" type="button">
+            ✨ Encender lluvia de estrellas por Abu
+          </button>
+          <button class="btn-secondary" id="btn-calm-sky" type="button">
+            🌌 Contemplar el cielo en calma
+          </button>
+          <button class="btn-secondary" id="btn-restart" type="button">
+            🔄 Volver al inicio
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Controles cuando se contempla el cielo en calma -->
+  <div class="reopen-letter-btn" id="reopen-controls">
+    <button class="btn-primary" id="btn-reopen-letter" type="button">📖 Ver carta</button>
+    <button class="btn-secondary" id="btn-calm-shower" type="button">✨ Más destellos</button>
+  </div>
+
+  <div class="sky-touch-hint" id="sky-touch-hint">Toca el cielo en cualquier momento para crear destellos ✨</div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      /* =====================================================================
+         1. MOTOR MUSICAL AMBIENTAL (WEB AUDIO API: Piano + Pad de Cuerdas)
+         ===================================================================== */
+      class AmbientScore {
+        constructor() {
+          this.ctx = null;
+          this.master = null;
+          this.musicGain = null;
+          this.isPlaying = false;
+          this.isMuted = false;
+          this.timerId = null;
+          this.step = 0;
+          this.warmMode = false;
+
+          // Progresión emotiva: Fmaj7 -> Dm9 -> Bbmaj7 -> Csus4/C
+          this.chords = [
+            { bass: 174.61, pad: [261.63, 329.63, 440.00], arp: [349.23, 440.00, 523.25, 659.25, 523.25, 440.00] }, // Fmaj7
+            { bass: 146.83, pad: [220.00, 329.63, 349.23], arp: [293.66, 349.23, 440.00, 659.25, 440.00, 349.23] }, // Dm9
+            { bass: 116.54, pad: [233.08, 293.66, 440.00], arp: [233.08, 349.23, 440.00, 587.33, 440.00, 349.23] }, // Bbmaj7
+            { bass: 130.81, pad: [261.63, 349.23, 392.00], arp: [261.63, 392.00, 523.25, 659.25, 587.33, 493.88] }  // Csus4 -> C
+          ];
+        }
+
+        init() {
+          if (this.ctx) return;
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+
+          this.ctx = new AudioCtx();
+          this.master = this.ctx.createGain();
+          this.master.gain.value = 0.72;
+          this.master.connect(this.ctx.destination);
+
+          this.musicGain = this.ctx.createGain();
+          this.musicGain.gain.value = 0.0001;
+
+          // Filtro cálido maestro
+          this.filter = this.ctx.createBiquadFilter();
+          this.filter.type = 'lowpass';
+          this.filter.frequency.value = 1250;
+          this.filter.Q.value = 0.7;
+
+          // Red de eco/reverb suave
+          this.delayL = this.ctx.createDelay(1.0);
+          this.delayL.delayTime.value = 0.38;
+          this.delayR = this.ctx.createDelay(1.0);
+          this.delayR.delayTime.value = 0.56;
+
+          const fbL = this.ctx.createGain();
+          fbL.gain.value = 0.34;
+          const fbR = this.ctx.createGain();
+          fbR.gain.value = 0.32;
+
+          const wetGain = this.ctx.createGain();
+          wetGain.gain.value = 0.38;
+
+          this.musicGain.connect(this.filter);
+          this.filter.connect(this.master);
+
+          this.filter.connect(this.delayL);
+          this.delayL.connect(fbL);
+          fbL.connect(this.delayR);
+          this.delayR.connect(fbR);
+          fbR.connect(this.delayL);
+
+          this.delayL.connect(wetGain);
+          this.delayR.connect(wetGain);
+          wetGain.connect(this.master);
+        }
+
+        async start() {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') {
+            await this.ctx.resume();
+          }
+
+          this.isMuted = false;
+          const now = this.ctx.currentTime;
+          this.musicGain.gain.cancelScheduledValues(now);
+          this.musicGain.gain.setTargetAtTime(0.85, now, 0.9);
+
+          if (!this.isPlaying) {
+            this.isPlaying = true;
+            this.scheduleLoop();
+          }
+        }
+
+        toggleMute() {
+          if (!this.ctx) {
+            this.start();
+            return false;
+          }
+          const now = this.ctx.currentTime;
+          if (this.isMuted) {
+            this.isMuted = false;
+            if (this.ctx.state === 'suspended') this.ctx.resume();
+            this.musicGain.gain.setTargetAtTime(0.85, now, 0.5);
+          } else {
+            this.isMuted = true;
+            this.musicGain.gain.setTargetAtTime(0.0001, now, 0.3);
+          }
+          return this.isMuted;
+        }
+
+        setWarmSwelling(enable) {
+          this.warmMode = enable;
+          if (this.filter && this.ctx) {
+            this.filter.frequency.setTargetAtTime(enable ? 1650 : 1250, this.ctx.currentTime, 1.8);
+          }
+        }
+
+        playPianoNote(freq, duration = 3.5, volume = 0.14, delaySec = 0) {
+          if (!this.ctx || this.isMuted) return;
+          const start = this.ctx.currentTime + delaySec;
+
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const noteFilter = this.ctx.createBiquadFilter();
+          const env = this.ctx.createGain();
+
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(freq, start);
+
+          osc2.type = 'triangle';
+          osc2.frequency.setValueAtTime(freq * 2, start);
+
+          const osc2Gain = this.ctx.createGain();
+          osc2Gain.gain.value = 0.16;
+
+          noteFilter.type = 'lowpass';
+          noteFilter.frequency.setValueAtTime(1400, start);
+          noteFilter.frequency.exponentialRampToValueAtTime(520, start + duration);
+
+          env.gain.setValueAtTime(0.0001, start);
+          env.gain.linearRampToValueAtTime(volume, start + 0.045);
+          env.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+
+          osc1.connect(noteFilter);
+          osc2.connect(osc2Gain);
+          osc2Gain.connect(noteFilter);
+          noteFilter.connect(env);
+          env.connect(this.musicGain);
+
+          osc1.start(start);
+          osc2.start(start);
+          osc1.stop(start + duration + 0.1);
+          osc2.stop(start + duration + 0.1);
+        }
+
+        playPadChord(freqs, bassFreq, duration = 5.6) {
+          if (!this.ctx || this.isMuted) return;
+          const start = this.ctx.currentTime;
+          const padGain = this.ctx.createGain();
+          const vol = this.warmMode ? 0.055 : 0.036;
+
+          padGain.gain.setValueAtTime(0.0001, start);
+          padGain.gain.linearRampToValueAtTime(vol, start + 1.8);
+          padGain.gain.linearRampToValueAtTime(vol * 0.7, start + duration - 1.4);
+          padGain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+          padGain.connect(this.musicGain);
+
+          // Bajo cálido
+          const bassOsc = this.ctx.createOscillator();
+          bassOsc.type = 'sine';
+          bassOsc.frequency.setValueAtTime(bassFreq * 0.5, start);
+          bassOsc.connect(padGain);
+          bassOsc.start(start);
+          bassOsc.stop(start + duration + 0.1);
+
+          freqs.forEach((f, idx) => {
+            const osc = this.ctx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(f, start);
+            osc.detune.setValueAtTime((idx - 1) * 4, start);
+            osc.connect(padGain);
+            osc.start(start);
+            osc.stop(start + duration + 0.1);
+          });
+        }
+
+        playChime(pitchMultiplier = 1) {
+          if (!this.ctx || this.isMuted) return;
+          const now = this.ctx.currentTime;
+          const notes = [880 * pitchMultiplier, 1318.5 * pitchMultiplier];
+          notes.forEach((freq, i) => {
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + i * 0.09);
+
+            g.gain.setValueAtTime(0.0001, now + i * 0.09);
+            g.gain.linearRampToValueAtTime(0.045, now + i * 0.09 + 0.03);
+            g.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.09 + 1.6);
+
+            osc.connect(g);
+            g.connect(this.musicGain);
+            osc.start(now + i * 0.09);
+            osc.stop(now + i * 0.09 + 1.7);
+          });
+        }
+
+        scheduleLoop() {
+          if (!this.isPlaying) return;
+          const chordIndex = Math.floor(this.step / 6) % this.chords.length;
+          const noteIndex = this.step % 6;
+          const chord = this.chords[chordIndex];
+
+          if (noteIndex === 0) {
+            this.playPadChord(chord.pad, chord.bass, 5.4);
+            this.playPianoNote(chord.bass, 4.2, 0.11, 0.02);
+          }
+
+          const freq = chord.arp[noteIndex];
+          this.playPianoNote(freq, 3.6, this.warmMode ? 0.13 : 0.105);
+
+          // Pequeña nota ornamental suave en la escena final
+          if (this.warmMode && noteIndex === 3) {
+            this.playPianoNote(freq * 1.5, 2.8, 0.055, 0.42);
+          }
+
+          this.step++;
+          this.timerId = window.setTimeout(() => this.scheduleLoop(), 860);
+        }
+      }
+
+      const audioScore = new AmbientScore();
+
+      /* =====================================================================
+         2. MOTOR VISUAL EN CANVAS (Cielo estrellado + Luz de Abu + Cometas)
+         ===================================================================== */
+      const canvas = document.getElementById('sky-canvas');
+      const ctx = canvas.getContext('2d');
+
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+      let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      const stars = [];
+      const particles = [];
+      const ripples = [];
+      const comets = [];
+      const rings = [];
+
+      let currentScene = 0;
+      let pointerOffset = { x: 0, y: 0 };
+
+      // Estado de la Luz de Abu / Estrella Eterna
+      const abuLight = {
+        x: width * 0.5,
+        y: height * 0.86,
+        targetX: width * 0.5,
+        targetY: height * 0.86,
+        intensity: 0.82,
+        targetIntensity: 0.82,
+        starMode: 0,      // 0 = orbe de luz cálida, 1 = estrella radiante de 8 puntas
+        targetStarMode: 0,
+        pulseBoost: 0,
+        time: 0
+      };
+
+      // Colores evolutivos del cielo según escena
+      const skyPalettes = [
+        { top: [5, 7, 17], mid: [10, 15, 36], bot: [16, 22, 48] },     // Escena 0
+        { top: [4, 6, 15], mid: [9, 14, 34], bot: [15, 20, 44] },      // Escena 1
+        { top: [6, 9, 22], mid: [13, 21, 46], bot: [22, 26, 56] },     // Escena 2
+        { top: [8, 12, 28], mid: [18, 25, 56], bot: [28, 29, 60] },    // Escena 3
+        { top: [7, 12, 30], mid: [16, 26, 62], bot: [26, 28, 58] },    // Escena 4
+        { top: [9, 14, 34], mid: [20, 30, 68], bot: [32, 30, 62] }     // Escena 5
+      ];
+      let currentPalette = {
+        top: [...skyPalettes[0].top],
+        mid: [...skyPalettes[0].mid],
+        bot: [...skyPalettes[0].bot]
+      };
+
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        initStars();
+        updateAbuTargetsForScene(currentScene);
+      }
+
+      function initStars() {
+        stars.length = 0;
+        const count = Math.max(270, Math.floor((width * height) / 3800));
+        for (let i = 0; i < count; i++) {
+          const depth = Math.random();
+          stars.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: 0.45 + depth * 1.65,
+            depth: 0.2 + depth * 0.8,
+            baseAlpha: 0.25 + Math.random() * 0.65,
+            twinklePhase: Math.random() * Math.PI * 2,
+            twinkleSpeed: 0.008 + Math.random() * 0.025,
+            warmth: Math.random() > 0.72
+          });
+        }
+      }
+
+      function spawnParticles(x, y, count = 20, upwardBias = 0.6, goldHue = true) {
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 0.4 + Math.random() * 2.1;
+          particles.push({
+            x: x + (Math.random() - 0.5) * 14,
+            y: y + (Math.random() - 0.5) * 14,
+            vx: Math.cos(angle) * speed * 0.7,
+            vy: Math.sin(angle) * speed * 0.7 - upwardBias * (0.4 + Math.random() * 1.1),
+            size: 1.1 + Math.random() * 2.4,
+            life: 1,
+            decay: 0.009 + Math.random() * 0.014,
+            color: goldHue
+              ? (Math.random() > 0.35 ? '255, 229, 153' : '255, 185, 88')
+              : '255, 248, 232'
+          });
+        }
+      }
+
+      function spawnRipple(x, y, maxR = 75) {
+        ripples.push({
+          x,
+          y,
+          radius: 4,
+          maxRadius: maxR,
+          alpha: 0.55
+        });
+      }
+
+      function launchLoveComet(startX, startY, onArrive = null) {
+        const destX = abuLight.x;
+        const destY = abuLight.y;
+        const midX = (startX + destX) * 0.5 + (Math.random() - 0.5) * Math.min(180, width * 0.32);
+        const midY = Math.min(startY, destY) - (40 + Math.random() * 80);
+
+        comets.push({
+          t: 0,
+          speed: 0.015 + Math.random() * 0.007,
+          p0: { x: startX, y: startY },
+          p1: { x: midX, y: midY },
+          p2: { x: destX, y: destY },
+          trail: [],
+          onArrive
+        });
+        spawnParticles(startX, startY, 10, 0.5, true);
+        spawnRipple(startX, startY, 55);
+      }
+
+      function updateAbuTargetsForScene(sceneIdx) {
+        abuLight.targetX = width * 0.5;
+        if (sceneIdx === 0) {
+          // Escena 0: Chispa cálida flotando en la parte media-baja
+          abuLight.targetY = height * 0.86;
+          abuLight.targetIntensity = 0.82;
+          abuLight.targetStarMode = 0.0;
+        } else if (sceneIdx === 1) {
+          // Escena 1: Chispa cálida aún cerca en la parte media-baja
+          abuLight.targetY = height * 0.84;
+          abuLight.targetIntensity = 0.94;
+          abuLight.targetStarMode = 0.08;
+        } else if (sceneIdx === 2) {
+          // Escena 2: Asciende hacia la zona media-alta dejando polvo de estrellas
+          abuLight.targetY = height * 0.22;
+          abuLight.targetIntensity = 1.12;
+          abuLight.targetStarMode = 0.45;
+        } else if (sceneIdx === 3) {
+          // Escena 3: Irradia anillos cálidos mientras Abu susurra desde lo alto
+          abuLight.targetY = height * 0.16;
+          abuLight.targetIntensity = 1.24;
+          abuLight.targetStarMode = 0.68;
+        } else {
+          // Escena 4 y 5: Asciende al 18% superior como La Estrella Eterna de Abu
+          abuLight.targetY = height * 0.18;
+          abuLight.targetIntensity = 1.4;
+          abuLight.targetStarMode = 1.0;
+        }
+      }
+
+      function lerp(a, b, t) {
+        return a + (b - a) * t;
+      }
+
+      function drawSky() {
+        const target = skyPalettes[currentScene] || skyPalettes[0];
+        for (let i = 0; i < 3; i++) {
+          currentPalette.top[i] = lerp(currentPalette.top[i], target.top[i], 0.02);
+          currentPalette.mid[i] = lerp(currentPalette.mid[i], target.mid[i], 0.02);
+          currentPalette.bot[i] = lerp(currentPalette.bot[i], target.bot[i], 0.02);
+        }
+
+        const grad = ctx.createLinearGradient(0, 0, 0, height);
+        grad.addColorStop(0, `rgb(${currentPalette.top.map(Math.round).join(',')})`);
+        grad.addColorStop(0.55, `rgb(${currentPalette.mid.map(Math.round).join(',')})`);
+        grad.addColorStop(1, `rgb(${currentPalette.bot.map(Math.round).join(',')})`);
+
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, width, height);
+
+        // Nebulosa cálida sutil detrás de la estrella
+        const neb = ctx.createRadialGradient(
+          abuLight.x, abuLight.y, 10,
+          abuLight.x, abuLight.y, Math.max(width, height) * 0.55
+        );
+        neb.addColorStop(0, `rgba(255, 200, 110, ${0.07 * abuLight.intensity})`);
+        neb.addColorStop(0.45, `rgba(90, 105, 195, ${0.06})`);
+        neb.addColorStop(1, 'rgba(5, 7, 17, 0)');
+        ctx.fillStyle = neb;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      function drawStars() {
+        for (let i = 0; i < stars.length; i++) {
+          const s = stars[i];
+          s.twinklePhase += s.twinkleSpeed;
+          const twinkle = 0.55 + 0.45 * Math.sin(s.twinklePhase);
+          const alpha = Math.min(1, s.baseAlpha * twinkle);
+
+          const px = s.x + pointerOffset.x * s.depth * 14;
+          const py = s.y + pointerOffset.y * s.depth * 10;
+
+          ctx.beginPath();
+          ctx.arc(px, py, s.radius, 0, Math.PI * 2);
+          ctx.fillStyle = s.warmth
+            ? `rgba(255, 236, 194, ${alpha})`
+            : `rgba(232, 240, 255, ${alpha})`;
+          ctx.fill();
+        }
+      }
+
+      function drawAbuLight() {
+        abuLight.time += 0.022;
+        abuLight.x = lerp(abuLight.x, abuLight.targetX + Math.sin(abuLight.time * 0.7) * 8, 0.035);
+        abuLight.y = lerp(abuLight.y, abuLight.targetY + Math.cos(abuLight.time * 0.9) * 5, 0.035);
+        abuLight.intensity = lerp(abuLight.intensity, abuLight.targetIntensity, 0.03);
+        abuLight.starMode = lerp(abuLight.starMode, abuLight.targetStarMode, 0.03);
+        abuLight.pulseBoost = lerp(abuLight.pulseBoost, 0, 0.06);
+
+        const x = abuLight.x;
+        const y = abuLight.y;
+        const breath = 1 + Math.sin(abuLight.time * 1.4) * 0.07 + abuLight.pulseBoost * 0.55;
+        const baseRadius = (16 + abuLight.intensity * 10) * breath;
+
+        // Emisión pasiva suave de polvo dorado (más intensa al ascender)
+        const isAscending = Math.abs(abuLight.targetY - abuLight.y) > 16;
+        if (Math.random() < (isAscending ? 0.85 : 0.28)) {
+          particles.push({
+            x: x + (Math.random() - 0.5) * 16,
+            y: y + (Math.random() - 0.5) * 16,
+            vx: (Math.random() - 0.5) * (isAscending ? 0.9 : 0.35),
+            vy: isAscending ? (0.4 + Math.random() * 0.9) : (-0.25 - Math.random() * 0.45),
+            size: (isAscending ? 1.4 : 1) + Math.random() * 1.8,
+            life: 1,
+            decay: 0.01 + Math.random() * 0.01,
+            color: '255, 229, 153'
+          });
+        }
+
+        // Anillos cálidos cuando Abu "susurra" en la Escena 3
+        if (currentScene === 3 && Math.random() < 0.018) {
+          rings.push({ x, y, radius: baseRadius * 0.8, alpha: 0.42 });
+        }
+
+        for (let i = rings.length - 1; i >= 0; i--) {
+          const r = rings[i];
+          r.radius += 0.85;
+          r.alpha -= 0.0045;
+          if (r.alpha <= 0) {
+            rings.splice(i, 1);
+            continue;
+          }
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(255, 224, 153, ${r.alpha})`;
+          ctx.lineWidth = 1.3;
+          ctx.stroke();
+        }
+
+        // Halo multicapa
+        const outerHalo = ctx.createRadialGradient(x, y, 2, x, y, baseRadius * 4.5);
+        outerHalo.addColorStop(0, `rgba(255, 245, 210, ${0.85 * Math.min(1, abuLight.intensity)})`);
+        outerHalo.addColorStop(0.22, 'rgba(255, 214, 128, 0.46)');
+        outerHalo.addColorStop(0.55, 'rgba(255, 179, 71, 0.14)');
+        outerHalo.addColorStop(1, 'rgba(255, 179, 71, 0)');
+
+        ctx.beginPath();
+        ctx.arc(x, y, baseRadius * 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = outerHalo;
+        ctx.fill();
+
+        // Rayos de estrella de 8 puntas (aparecen al ascender)
+        if (abuLight.starMode > 0.05) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.globalAlpha = Math.min(1, abuLight.starMode * 0.95);
+
+          const drawRay = (angle, len, thickness, alpha) => {
+            ctx.save();
+            ctx.rotate(angle);
+            const rg = ctx.createLinearGradient(-len, 0, len, 0);
+            rg.addColorStop(0, 'rgba(255, 229, 153, 0)');
+            rg.addColorStop(0.5, `rgba(255, 248, 225, ${alpha})`);
+            rg.addColorStop(1, 'rgba(255, 229, 153, 0)');
+            ctx.fillStyle = rg;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, len, thickness, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          };
+
+          const mainLen = (48 + abuLight.pulseBoost * 35) * breath;
+          const diagLen = mainLen * 0.56;
+          drawRay(0, mainLen, 2.2, 0.95);
+          drawRay(Math.PI / 2, mainLen, 2.2, 0.95);
+          drawRay(Math.PI / 4, diagLen, 1.4, 0.72);
+          drawRay(-Math.PI / 4, diagLen, 1.4, 0.72);
+
+          ctx.restore();
+        }
+
+        // Núcleo luminoso cálido
+        const coreGrad = ctx.createRadialGradient(x, y, 0, x, y, baseRadius * 0.75);
+        coreGrad.addColorStop(0, '#ffffff');
+        coreGrad.addColorStop(0.45, '#ffe599');
+        coreGrad.addColorStop(1, 'rgba(255, 179, 71, 0)');
+        ctx.beginPath();
+        ctx.arc(x, y, baseRadius * 0.75, 0, Math.PI * 2);
+        ctx.fillStyle = coreGrad;
+        ctx.fill();
+      }
+
+      function drawComets() {
+        for (let i = comets.length - 1; i >= 0; i--) {
+          const c = comets[i];
+          c.p2.x = abuLight.x;
+          c.p2.y = abuLight.y;
+          c.t += c.speed;
+
+          if (c.t >= 1) {
+            abuLight.pulseBoost = 1.1;
+            spawnRipple(abuLight.x, abuLight.y, 110);
+            spawnParticles(abuLight.x, abuLight.y, 26, 0.1, true);
+            if (typeof c.onArrive === 'function') c.onArrive();
+            comets.splice(i, 1);
+            continue;
+          }
+
+          const u = 1 - c.t;
+          const x = u * u * c.p0.x + 2 * u * c.t * c.p1.x + c.t * c.t * c.p2.x;
+          const y = u * u * c.p0.y + 2 * u * c.t * c.p1.y + c.t * c.t * c.p2.y;
+
+          c.trail.push({ x, y });
+          if (c.trail.length > 22) c.trail.shift();
+
+          for (let j = 0; j < c.trail.length; j++) {
+            const pt = c.trail[j];
+            const ratio = (j + 1) / c.trail.length;
+            ctx.beginPath();
+            ctx.arc(pt.x, pt.y, 1.2 + ratio * 3.4, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 224, 145, ${ratio * 0.75})`;
+            ctx.fill();
+          }
+
+          // Cabeza del cometa
+          const hg = ctx.createRadialGradient(x, y, 0, x, y, 16);
+          hg.addColorStop(0, '#ffffff');
+          hg.addColorStop(0.4, 'rgba(255, 229, 153, 0.9)');
+          hg.addColorStop(1, 'rgba(255, 179, 71, 0)');
+          ctx.beginPath();
+          ctx.arc(x, y, 16, 0, Math.PI * 2);
+          ctx.fillStyle = hg;
+          ctx.fill();
+
+          if (Math.random() < 0.45) {
+            particles.push({
+              x, y,
+              vx: (Math.random() - 0.5) * 0.8,
+              vy: (Math.random() - 0.5) * 0.8,
+              size: 1 + Math.random() * 1.5,
+              life: 0.9,
+              decay: 0.025,
+              color: '255, 229, 153'
+            });
+          }
+        }
+      }
+
+      function drawParticlesAndRipples() {
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const r = ripples[i];
+          r.radius += (r.maxRadius - r.radius) * 0.08 + 0.6;
+          r.alpha *= 0.94;
+          if (r.alpha < 0.02 || r.radius >= r.maxRadius) {
+            ripples.splice(i, 1);
+            continue;
+          }
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(255, 229, 153, ${r.alpha})`;
+          ctx.lineWidth = 1.4;
+          ctx.stroke();
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life -= p.decay;
+          if (p.life <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${p.color}, ${p.life})`;
+          ctx.fill();
+        }
+      }
+
+      function animate() {
+        drawSky();
+        drawStars();
+        drawAbuLight();
+        drawComets();
+        drawParticlesAndRipples();
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+      animate();
+
+      /* =====================================================================
+         3. GESTIÓN DE ESCENAS Y RITUAL INTERACTIVO
+         ===================================================================== */
+      const stageEl = document.getElementById('stage');
+      const scenes = Array.from(document.querySelectorAll('.scene'));
+      const dots = Array.from(document.querySelectorAll('.dot'));
+      const starWhisperEl = document.getElementById('star-whisper');
+      const audioToggleBtn = document.getElementById('audio-toggle');
+      const audioIcon = document.getElementById('audio-icon');
+      const audioLabel = document.getElementById('audio-label');
+
+      let sparkCount = 0;
+      let whisperTimer = null;
+      const ritualMessages = [
+        '«Te quiero mucho, Abu ✨»',
+        '«Descansa en paz, Abu 🤍»',
+        '«Siempre vivirás en mi corazón 🌟»'
+      ];
+
+      function updateAudioUI(muted) {
+        if (muted) {
+          audioToggleBtn.classList.add('muted');
+          audioIcon.textContent = '🔇';
+          audioLabel.textContent = 'Silencio';
+        } else {
+          audioToggleBtn.classList.remove('muted');
+          audioIcon.textContent = '🔊';
+          audioLabel.textContent = 'Música';
+        }
+      }
+
+      function showStarWhisper(text) {
+        if (whisperTimer) clearTimeout(whisperTimer);
+        starWhisperEl.textContent = text;
+        starWhisperEl.classList.add('show');
+        whisperTimer = setTimeout(() => {
+          starWhisperEl.classList.remove('show');
+        }, 3200);
+      }
+
+      function goToScene(nextIdx) {
+        if (nextIdx === currentScene) return;
+        currentScene = nextIdx;
+
+        scenes.forEach((sc, idx) => {
+          sc.classList.toggle('active', idx === nextIdx);
+        });
+
+        dots.forEach((dot, idx) => {
+          dot.classList.toggle('active', idx === nextIdx);
+          dot.classList.toggle('done', idx < nextIdx);
+        });
+
+        // Dejar la luz/estrella despejada en lo alto desde la escena 3 en adelante
+        stageEl.classList.toggle('star-clear', nextIdx >= 3);
+
+        updateAbuTargetsForScene(nextIdx);
+        audioScore.playChime(nextIdx >= 4 ? 1.15 : 1);
+        audioScore.setWarmSwelling(nextIdx === 5);
+
+        if (nextIdx === 2) {
+          // Estela de luciérnagas doradas
+          for (let i = 0; i < 4; i++) {
+            setTimeout(() => {
+              spawnParticles(width * (0.35 + i * 0.1), height * 0.55, 16, 1.1, true);
+            }, i * 240);
+          }
+        }
+
+        if (nextIdx === 4) {
+          resetRitualUI();
+        }
+
+        if (nextIdx === 5) {
+          // Pequeño destello de bienvenida en la carta final
+          setTimeout(() => {
+            launchLoveComet(width * 0.25, height * 0.85);
+            launchLoveComet(width * 0.75, height * 0.85);
+          }, 350);
+        }
+      }
+
+      function resetRitualUI() {
+        sparkCount = 0;
+        document.getElementById('spark-count').textContent = '0';
+        ['pip-1', 'pip-2', 'pip-3'].forEach(id => {
+          document.getElementById(id).classList.remove('lit');
+        });
+        document.getElementById('btn-send-spark').classList.remove('hidden');
+        document.getElementById('btn-to-letter').classList.add('hidden');
+      }
+
+      function triggerRitualSpark(originX, originY) {
+        if (currentScene !== 4 || sparkCount >= 3) return;
+        const msgIndex = sparkCount;
+        sparkCount++;
+
+        document.getElementById('spark-count').textContent = String(sparkCount);
+        const pip = document.getElementById(`pip-${sparkCount}`);
+        if (pip) pip.classList.add('lit');
+
+        audioScore.playChime(1 + sparkCount * 0.12);
+
+        launchLoveComet(originX, originY, () => {
+          showStarWhisper(ritualMessages[msgIndex]);
+          audioScore.playChime(1.35);
+        });
+
+        if (sparkCount >= 3) {
+          setTimeout(() => {
+            document.getElementById('btn-send-spark').classList.add('hidden');
+            document.getElementById('btn-to-letter').classList.remove('hidden');
+          }, 950);
+        }
+      }
+
+      function triggerMeteorShower() {
+        const total = 12;
+        for (let i = 0; i < total; i++) {
+          setTimeout(() => {
+            const sx = width * (0.1 + Math.random() * 0.8);
+            const sy = height * (0.72 + Math.random() * 0.22);
+            launchLoveComet(sx, sy);
+            if (i % 3 === 0) audioScore.playChime(1 + Math.random() * 0.35);
+          }, i * 160);
+        }
+        showStarWhisper('Para tu Abu, con amor eterno ✨');
+      }
+
+      /* =====================================================================
+         4. EVENTOS DE UI E INTERACTIVIDAD TÁCTIL
+         ===================================================================== */
+      document.getElementById('btn-start').addEventListener('click', async () => {
+        await audioScore.start();
+        updateAudioUI(false);
+        goToScene(1);
+      });
+
+      audioToggleBtn.addEventListener('click', () => {
+        const muted = audioScore.toggleMute();
+        updateAudioUI(muted);
+      });
+
+      document.querySelectorAll('.next-scene-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = Number(btn.getAttribute('data-next'));
+          goToScene(target);
+        });
+      });
+
+      document.getElementById('btn-send-spark').addEventListener('click', (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        triggerRitualSpark(rect.left + rect.width * 0.5, rect.top);
+      });
+
+      document.getElementById('btn-to-letter').addEventListener('click', () => {
+        goToScene(5);
+      });
+
+      // Selector de versión de carta (Escena de película vs Palabras originales)
+      const pillMovie = document.getElementById('pill-movie');
+      const pillRaw = document.getElementById('pill-raw');
+      const letterMovie = document.getElementById('letter-movie');
+      const letterRaw = document.getElementById('letter-raw');
+
+      pillMovie.addEventListener('click', () => {
+        pillMovie.classList.add('active');
+        pillRaw.classList.remove('active');
+        letterMovie.classList.remove('hidden');
+        letterRaw.classList.add('hidden');
+      });
+
+      pillRaw.addEventListener('click', () => {
+        pillRaw.classList.add('active');
+        pillMovie.classList.remove('active');
+        letterRaw.classList.remove('hidden');
+        letterMovie.classList.add('hidden');
+      });
+
+      document.getElementById('btn-meteor-shower').addEventListener('click', triggerMeteorShower);
+      document.getElementById('btn-calm-shower').addEventListener('click', triggerMeteorShower);
+
+      // Contemplar el cielo en calma / volver a ver la carta
+      const reopenControls = document.getElementById('reopen-controls');
+      const scene5El = document.getElementById('scene-5');
+      const touchHintEl = document.getElementById('sky-touch-hint');
+
+      document.getElementById('btn-calm-sky').addEventListener('click', () => {
+        scene5El.classList.remove('active');
+        reopenControls.classList.add('visible');
+        touchHintEl.style.opacity = '0';
+      });
+
+      document.getElementById('btn-reopen-letter').addEventListener('click', () => {
+        reopenControls.classList.remove('visible');
+        scene5El.classList.add('active');
+        touchHintEl.style.opacity = '1';
+      });
+
+      document.getElementById('btn-restart').addEventListener('click', () => {
+        reopenControls.classList.remove('visible');
+        touchHintEl.style.opacity = '1';
+        goToScene(0);
+      });
+
+      // Interactividad táctil / mouse en todo el cielo
+      let lastMoveSpawn = 0;
+      window.addEventListener('pointerdown', (e) => {
+        const onInteractive = e.target.closest('button, .ethereal-card, .soft-panel, .progress-dots');
+        spawnRipple(e.clientX, e.clientY, 80);
+        spawnParticles(e.clientX, e.clientY, 20, 0.75, true);
+
+        if (!onInteractive) {
+          if (currentScene === 4 && sparkCount < 3) {
+            triggerRitualSpark(e.clientX, e.clientY);
+          } else if (currentScene >= 4) {
+            launchLoveComet(e.clientX, e.clientY);
+          }
+        }
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        pointerOffset.x = (e.clientX / width - 0.5) * 2;
+        pointerOffset.y = (e.clientY / height - 0.5) * 2;
+
+        const now = performance.now();
+        if ((e.buttons > 0 || e.pointerType === 'touch') && now - lastMoveSpawn > 55) {
+          lastMoveSpawn = now;
+          spawnParticles(e.clientX, e.clientY, 3, 0.5, true);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
