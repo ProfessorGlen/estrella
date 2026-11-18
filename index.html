@@ -369,9 +369,24 @@
     }
 
     /* Escena 5: Carta final */
+    #scene-5 {
+      width: min(94vw, 800px);
+    }
+
     .letter-card {
       text-align: left;
-      padding: 28px 24px;
+      padding: 28px 26px;
+    }
+
+    .letter-layout {
+      display: grid;
+      grid-template-columns: 1fr 195px;
+      gap: 22px;
+      align-items: center;
+    }
+
+    .letter-main {
+      min-width: 0;
     }
 
     .letter-top-row {
@@ -380,7 +395,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .letter-salutation {
@@ -391,46 +406,19 @@
       margin-bottom: 14px;
     }
 
-    .mode-switch {
-      display: inline-flex;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 229, 153, 0.18);
-      border-radius: 999px;
-      padding: 3px;
-      gap: 2px;
-    }
-
-    .mode-pill {
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      font-family: var(--font-sans);
-      font-size: 0.7rem;
-      font-weight: 500;
-      padding: 5px 10px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-
-    .mode-pill.active {
-      background: rgba(255, 229, 153, 0.2);
-      color: var(--gold-soft);
-    }
-
     .letter-body {
       font-family: var(--font-serif);
-      font-size: clamp(1.14rem, 3.3vw, 1.34rem);
-      line-height: 1.62;
+      font-size: clamp(1.14rem, 3.2vw, 1.32rem);
+      line-height: 1.6;
       color: rgba(250, 247, 240, 0.94);
       display: flex;
       flex-direction: column;
-      gap: 13px;
-      margin-bottom: 22px;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     .letter-body .promise-highlight {
-      font-size: clamp(1.24rem, 3.6vw, 1.46rem);
+      font-size: clamp(1.22rem, 3.5vw, 1.44rem);
       font-weight: 600;
       color: #fff6dc;
       padding: 10px 14px;
@@ -441,11 +429,126 @@
 
     .letter-sign {
       font-family: var(--font-serif);
-      font-size: clamp(1.25rem, 3.6vw, 1.48rem);
+      font-size: clamp(1.24rem, 3.5vw, 1.46rem);
       font-weight: 600;
       font-style: italic;
       color: var(--gold-soft);
       margin-top: 4px;
+    }
+
+    /* Ilustración animada de los dos gatitos formando un corazón */
+    .cats-companion {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 10px 10px;
+      border-radius: 20px;
+      background: radial-gradient(circle at 50% 45%, rgba(255, 214, 128, 0.12), rgba(14, 19, 42, 0.35) 75%);
+      border: 1px solid rgba(255, 224, 153, 0.16);
+      position: relative;
+    }
+
+    .cats-svg {
+      width: 175px;
+      height: auto;
+      overflow: visible;
+      filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
+    }
+
+    .cats-caption {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.92rem;
+      color: rgba(255, 229, 153, 0.85);
+      margin-top: 4px;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    .cat-left {
+      transform-origin: 70px 150px;
+      animation: catNuzzleLeft 4.6s ease-in-out infinite;
+    }
+
+    .cat-right {
+      transform-origin: 130px 150px;
+      animation: catNuzzleRight 4.6s ease-in-out infinite;
+    }
+
+    .heart-tail-glow {
+      animation: heartPulse 3.2s ease-in-out infinite;
+    }
+
+    .floating-heart {
+      transform-origin: 100px 84px;
+      animation: floatHeart 3.4s ease-in-out infinite;
+    }
+
+    .cat-sparkle-1 {
+      animation: sparkleTwinkle 2.6s ease-in-out infinite;
+    }
+
+    .cat-sparkle-2 {
+      animation: sparkleTwinkle 2.6s ease-in-out 1.3s infinite;
+    }
+
+    @keyframes catNuzzleLeft {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      50% { transform: rotate(2.6deg) translateY(-1px); }
+    }
+
+    @keyframes catNuzzleRight {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      50% { transform: rotate(-2.6deg) translateY(-1px); }
+    }
+
+    @keyframes heartPulse {
+      0%, 100% {
+        opacity: 0.82;
+        filter: drop-shadow(0 0 5px rgba(255, 214, 128, 0.45));
+      }
+      50% {
+        opacity: 1;
+        filter: drop-shadow(0 0 14px rgba(255, 196, 120, 0.9));
+      }
+    }
+
+    @keyframes floatHeart {
+      0%, 100% {
+        transform: translateY(2px) scale(0.94);
+        opacity: 0.78;
+      }
+      50% {
+        transform: translateY(-5px) scale(1.1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes sparkleTwinkle {
+      0%, 100% { opacity: 0.25; transform: scale(0.75); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    @media (max-width: 680px) {
+      .letter-layout {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .cats-companion {
+        flex-direction: row;
+        gap: 12px;
+        padding: 10px 14px;
+        justify-content: center;
+      }
+      .cats-svg {
+        width: 118px;
+      }
+      .cats-caption {
+        margin-top: 0;
+        text-align: left;
+        font-size: 0.96rem;
+      }
     }
 
     /* Botones */
@@ -715,54 +818,136 @@
     <!-- ESCENA 5: CARTA FINAL PARA DANIELA -->
     <section class="scene star-scene" id="scene-5">
       <div class="ethereal-card letter-card">
-        <div class="letter-top-row">
-          <span class="eyebrow" style="margin-bottom: 0;">💌 Para ti, bajo su estrella</span>
-          <div class="mode-switch" role="tablist" aria-label="Estilo del mensaje">
-            <button class="mode-pill active" id="pill-movie" type="button">✨ Escena de película</button>
-            <button class="mode-pill" id="pill-raw" type="button">🤍 Del corazón</button>
+        <div class="letter-layout">
+          <div class="letter-main">
+            <div class="letter-top-row">
+              <span class="eyebrow" style="margin-bottom: 0;">💌 Para ti, bajo su estrella</span>
+            </div>
+
+            <h2 class="letter-salutation">Para ti, mi amor, Daniela:</h2>
+
+            <div class="letter-body" id="letter-movie">
+              <p>
+                Tal vez no haya logrado conectar de cerca con cómo fue toda tu historia junto a tu Abu… pero sí conozco tu corazón, y hoy aprovecho este pequeño espacio bajo su estrella para hacerte una promesa:
+              </p>
+              <p class="promise-highlight">
+                Yo no te voy a dejar sola, amor.
+              </p>
+              <p>
+                Aun cuando tus fuerzas decaigan, cuando tus energías ya no den más y tu persona no quiera saber nada del mundo… yo voy a estar ahí contigo, sosteniéndote en silencio, abrazando tu dolor y caminando a tu lado hasta cuando la vida decida.
+              </p>
+              <p>
+                Mientras tu Abu te cuida desde el cielo, yo estaré aquí cuidándote en la tierra.
+              </p>
+              <p class="letter-sign">Te amo y te extraño mucho. ❤️</p>
+            </div>
+
+            <div class="actions-row" style="justify-content: flex-start;">
+              <button class="btn-primary" id="btn-meteor-shower" type="button">
+                ✨ Encender lluvia de estrellas por Abu
+              </button>
+              <button class="btn-secondary" id="btn-calm-sky" type="button">
+                🌌 Contemplar el cielo en calma
+              </button>
+              <button class="btn-secondary" id="btn-restart" type="button">
+                🔄 Volver al inicio
+              </button>
+            </div>
           </div>
-        </div>
 
-        <h2 class="letter-salutation">Para ti, mi amor, Daniela:</h2>
+          <!-- Dos gatitos acurrucados formando un corazón con sus colas -->
+          <aside class="cats-companion" aria-label="Dos gatitos juntos formando un corazón bajo las estrellas">
+            <svg class="cats-svg" viewBox="0 0 200 185" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="catHalo" cx="50%" cy="46%" r="50%">
+                  <stop offset="0%" stop-color="#ffe599" stop-opacity="0.28" />
+                  <stop offset="65%" stop-color="#ffb347" stop-opacity="0.08" />
+                  <stop offset="100%" stop-color="#ffb347" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="catLeftFill" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#2a355d" />
+                  <stop offset="100%" stop-color="#141a33" />
+                </linearGradient>
+                <linearGradient id="catRightFill" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#fff0cf" />
+                  <stop offset="100%" stop-color="#e5c896" />
+                </linearGradient>
+                <linearGradient id="tailHeartGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#ffb347" />
+                  <stop offset="50%" stop-color="#ffe599" />
+                  <stop offset="100%" stop-color="#ffb6c1" />
+                </linearGradient>
+              </defs>
 
-        <!-- Versión Escena de Película -->
-        <div class="letter-body" id="letter-movie">
-          <p>
-            Tal vez no haya logrado conectar de cerca con cómo fue toda tu historia junto a tu Abu… pero sí conozco tu corazón, y hoy aprovecho este pequeño espacio bajo su estrella para hacerte una promesa:
-          </p>
-          <p class="promise-highlight">
-            Yo no te voy a dejar sola, amor.
-          </p>
-          <p>
-            Aun cuando tus fuerzas decaigan, cuando tus energías ya no den más y tu persona no quiera saber nada del mundo… yo voy a estar ahí contigo, sosteniéndote en silencio, abrazando tu dolor y caminando a tu lado hasta cuando la vida decida.
-          </p>
-          <p>
-            Mientras tu Abu te cuida desde el cielo, yo estaré aquí cuidándote en la tierra.
-          </p>
-          <p class="letter-sign">Te amo y te extraño mucho. ❤️</p>
-        </div>
+              <!-- Halo estelar de fondo -->
+              <circle cx="100" cy="95" r="78" fill="url(#catHalo)" />
 
-        <!-- Versión Palabras Originales -->
-        <div class="letter-body hidden" id="letter-raw">
-          <p>
-            Tal vez no haya logrado conectar en cómo fue la relación con su abu, pero aprovecho este espacio para decirte que <strong>yo no te voy a dejar sola, amor</strong>.
-          </p>
-          <p>
-            Aun cuando tus fuerzas decaigan, tus energías no den más y tu persona no quiera saber nada, yo estaré contigo hasta cuando la vida decida.
-          </p>
-          <p class="letter-sign">Te amo y te extraño mucho. ❤️</p>
-        </div>
+              <!-- Estrellitas parpadeantes -->
+              <path class="cat-sparkle-1" d="M36 36 L38 41 L43 43 L38 45 L36 50 L34 45 L29 43 L34 41 Z" fill="#ffe599" />
+              <path class="cat-sparkle-2" d="M164 32 L166 36 L170 38 L166 40 L164 44 L162 40 L158 38 L162 36 Z" fill="#ffe599" />
 
-        <div class="actions-row" style="justify-content: flex-start;">
-          <button class="btn-primary" id="btn-meteor-shower" type="button">
-            ✨ Encender lluvia de estrellas por Abu
-          </button>
-          <button class="btn-secondary" id="btn-calm-sky" type="button">
-            🌌 Contemplar el cielo en calma
-          </button>
-          <button class="btn-secondary" id="btn-restart" type="button">
-            🔄 Volver al inicio
-          </button>
+              <!-- Base / nube lunar donde se sientan -->
+              <ellipse cx="100" cy="164" rx="64" ry="10" fill="rgba(255, 229, 153, 0.14)" />
+              <path d="M 42 162 Q 100 153 158 162" stroke="rgba(255, 229, 153, 0.38)" stroke-width="1.4" fill="none" stroke-linecap="round" />
+
+              <!-- Corazón formado por las colas entrelazadas -->
+              <g class="heart-tail-glow">
+                <!-- Cola izquierda formando lado izquierdo del corazón -->
+                <path d="M 60 155 C 24 138, 16 74, 54 44 C 76 26, 95 45, 100 64"
+                      fill="none" stroke="url(#tailHeartGrad)" stroke-width="6.5" stroke-linecap="round" />
+                <!-- Cola derecha formando lado derecho del corazón -->
+                <path d="M 140 155 C 176 138, 184 74, 146 44 C 124 26, 105 45, 100 64"
+                      fill="none" stroke="url(#tailHeartGrad)" stroke-width="6.5" stroke-linecap="round" />
+              </g>
+
+              <!-- Gatito izquierdo (tono azul noche cálido) -->
+              <g class="cat-left">
+                <!-- Cuerpo -->
+                <path d="M 52 158 C 48 134, 56 116, 74 116 C 90 116, 96 134, 94 158 Z"
+                      fill="url(#catLeftFill)" stroke="rgba(255, 229, 153, 0.55)" stroke-width="1.3" />
+                <!-- Orejas -->
+                <path d="M 56 97 L 53 76 L 68 89 Z" fill="url(#catLeftFill)" stroke="rgba(255, 229, 153, 0.55)" stroke-width="1.2" stroke-linejoin="round" />
+                <path d="M 78 89 L 88 76 L 89 97 Z" fill="url(#catLeftFill)" stroke="rgba(255, 229, 153, 0.55)" stroke-width="1.2" stroke-linejoin="round" />
+                <path d="M 57 93 L 56 81 L 65 89 Z" fill="rgba(255, 196, 160, 0.45)" />
+                <path d="M 79 89 L 86 81 L 86 93 Z" fill="rgba(255, 196, 160, 0.45)" />
+                <!-- Cabeza -->
+                <ellipse cx="72" cy="103" rx="18" ry="16" fill="url(#catLeftFill)" stroke="rgba(255, 229, 153, 0.55)" stroke-width="1.3" />
+                <!-- Ojitos felices cerrados y naricita -->
+                <path d="M 62 103 Q 65 100 68 103" fill="none" stroke="#ffe599" stroke-width="1.5" stroke-linecap="round" />
+                <path d="M 75 103 Q 78 100 81 103" fill="none" stroke="#ffe599" stroke-width="1.5" stroke-linecap="round" />
+                <polygon points="71,106 74,106 72.5,108" fill="#ffb6c1" />
+                <!-- Bigotes -->
+                <path d="M 56 105 L 47 103 M 56 108 L 47 109" stroke="rgba(255, 229, 153, 0.45)" stroke-width="0.9" stroke-linecap="round" />
+              </g>
+
+              <!-- Gatito derecho (tono crema dorado suave) -->
+              <g class="cat-right">
+                <!-- Cuerpo -->
+                <path d="M 106 158 C 104 134, 110 116, 126 116 C 144 116, 152 134, 148 158 Z"
+                      fill="url(#catRightFill)" stroke="rgba(255, 245, 220, 0.75)" stroke-width="1.2" />
+                <!-- Orejas -->
+                <path d="M 111 97 L 112 76 L 122 89 Z" fill="url(#catRightFill)" stroke="rgba(255, 245, 220, 0.75)" stroke-width="1.2" stroke-linejoin="round" />
+                <path d="M 132 89 L 147 76 L 144 97 Z" fill="url(#catRightFill)" stroke="rgba(255, 245, 220, 0.75)" stroke-width="1.2" stroke-linejoin="round" />
+                <path d="M 114 93 L 114 81 L 121 89 Z" fill="rgba(255, 168, 180, 0.45)" />
+                <path d="M 135 89 L 144 81 L 143 93 Z" fill="rgba(255, 168, 180, 0.45)" />
+                <!-- Cabeza -->
+                <ellipse cx="128" cy="103" rx="18" ry="16" fill="url(#catRightFill)" stroke="rgba(255, 245, 220, 0.75)" stroke-width="1.2" />
+                <!-- Ojitos felices cerrados y naricita -->
+                <path d="M 119 103 Q 122 100 125 103" fill="none" stroke="#5b4330" stroke-width="1.5" stroke-linecap="round" />
+                <path d="M 132 103 Q 135 100 138 103" fill="none" stroke="#5b4330" stroke-width="1.5" stroke-linecap="round" />
+                <polygon points="127,106 130,106 128.5,108" fill="#f08090" />
+                <!-- Bigotes -->
+                <path d="M 144 105 L 153 103 M 144 108 L 153 109" stroke="rgba(255, 229, 153, 0.55)" stroke-width="0.9" stroke-linecap="round" />
+              </g>
+
+              <!-- Pequeño corazón flotando en el centro -->
+              <g class="floating-heart">
+                <path d="M 100 94 C 100 94, 90 87, 90 80.5 C 90 77, 93 74.5, 96 74.5 C 98 74.5, 99.4 75.7, 100 77 C 100.6 75.7, 102 74.5, 104 74.5 C 107 74.5, 110 77, 110 80.5 C 110 87, 100 94, 100 94 Z"
+                      fill="#ff8fa3" stroke="#fff0f3" stroke-width="0.8" />
+              </g>
+            </svg>
+            <p class="cats-caption">Siempre contigo, mirando su estrella 🤍</p>
+          </aside>
         </div>
       </div>
     </section>
@@ -1427,6 +1612,7 @@
       const scenes = Array.from(document.querySelectorAll('.scene'));
       const dots = Array.from(document.querySelectorAll('.dot'));
       const starWhisperEl = document.getElementById('star-whisper');
+      const touchHintEl = document.getElementById('sky-touch-hint');
       const audioToggleBtn = document.getElementById('audio-toggle');
       const audioIcon = document.getElementById('audio-icon');
       const audioLabel = document.getElementById('audio-label');
@@ -1475,6 +1661,7 @@
 
         // Dejar la luz/estrella despejada en lo alto desde la escena 3 en adelante
         stageEl.classList.toggle('star-clear', nextIdx >= 3);
+        touchHintEl.style.opacity = nextIdx === 5 ? '0' : '1';
 
         updateAbuTargetsForScene(nextIdx);
         audioScore.playChime(nextIdx >= 4 ? 1.15 : 1);
@@ -1579,33 +1766,12 @@
         goToScene(5);
       });
 
-      // Selector de versión de carta (Escena de película vs Palabras originales)
-      const pillMovie = document.getElementById('pill-movie');
-      const pillRaw = document.getElementById('pill-raw');
-      const letterMovie = document.getElementById('letter-movie');
-      const letterRaw = document.getElementById('letter-raw');
-
-      pillMovie.addEventListener('click', () => {
-        pillMovie.classList.add('active');
-        pillRaw.classList.remove('active');
-        letterMovie.classList.remove('hidden');
-        letterRaw.classList.add('hidden');
-      });
-
-      pillRaw.addEventListener('click', () => {
-        pillRaw.classList.add('active');
-        pillMovie.classList.remove('active');
-        letterRaw.classList.remove('hidden');
-        letterMovie.classList.add('hidden');
-      });
-
       document.getElementById('btn-meteor-shower').addEventListener('click', triggerMeteorShower);
       document.getElementById('btn-calm-shower').addEventListener('click', triggerMeteorShower);
 
       // Contemplar el cielo en calma / volver a ver la carta
       const reopenControls = document.getElementById('reopen-controls');
       const scene5El = document.getElementById('scene-5');
-      const touchHintEl = document.getElementById('sky-touch-hint');
 
       document.getElementById('btn-calm-sky').addEventListener('click', () => {
         scene5El.classList.remove('active');
@@ -1616,7 +1782,7 @@
       document.getElementById('btn-reopen-letter').addEventListener('click', () => {
         reopenControls.classList.remove('visible');
         scene5El.classList.add('active');
-        touchHintEl.style.opacity = '1';
+        touchHintEl.style.opacity = '0';
       });
 
       document.getElementById('btn-restart').addEventListener('click', () => {
